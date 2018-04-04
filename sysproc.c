@@ -77,19 +77,30 @@ sys_sleep(void)
 // return how many clock tick interrupts have occurred
 // since start. 
 int
-sys_uptime(void)
-{
+sys_uptime(void){
   uint xticks;
   
   xticks = ticks;
   return xticks;
 }
 
-//Turn of the computer
+// Turn off the computer
 int
 sys_halt(void){
   cprintf("Shutting down ...\n");
   outw( 0x604, 0x0 | 0x2000);
+  return 0;
+}
+
+// show current date
+int
+sys_date(void){
+  struct rtcdate *d;
+  
+  if(argptr(0, (void*)&d, sizeof(struct rtcdate)) < 0)
+    return -1;
+
+  cmostime(d);
   return 0;
 }
 

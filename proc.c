@@ -78,6 +78,9 @@ found:
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
 
+  // Project 1: initialized to existing global kernel variable
+  p->start_ticks = ticks;
+
   return p;
 }
 
@@ -506,6 +509,7 @@ procdump(void)
   struct proc *p;
   char *state;
   uint pc[10];
+  uint elapsedTime;
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->state == UNUSED)
@@ -514,16 +518,19 @@ procdump(void)
       state = states[p->state];
     else
       state = "???";
-    cprintf("%d %s %s", p->pid, state, p->name);
+    // Project 1: Control - P
+    elapsedTime = (ticks - p->start_ticks);
+    int firstdigit = elapsedTime / 1000;
+    cprintf("PID  State   Name  Elapsed  PCs\n");
+    cprintf("%d    %s   %s   %d.%d", p->pid, state, p->name, elapsedTime / 1000, elapsedTime - (firstdigit * 1000));
     if(p->state == SLEEPING){
       getcallerpcs((uint*)p->context->ebp+2, pc);
       for(i=0; i<10 && pc[i] != 0; i++)
-        cprintf(" %p", pc[i]);
+        cprintf("    %p", pc[i]);
     }
     cprintf("\n");
   }
 }
-
 
 #ifdef CS333_P3P4
 static int
