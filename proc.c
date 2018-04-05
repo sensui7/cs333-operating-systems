@@ -511,6 +511,8 @@ procdump(void)
   uint pc[10];
   uint elapsedTime;
 
+  cprintf("PID  State   Name  Elapsed  PCs\n");
+
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->state == UNUSED)
       continue;
@@ -518,11 +520,12 @@ procdump(void)
       state = states[p->state];
     else
       state = "???";
+
     // Project 1: Control - P
     elapsedTime = (ticks - p->start_ticks);
     int firstdigit = elapsedTime / 1000;
-    cprintf("PID  State   Name  Elapsed  PCs\n");
     cprintf("%d    %s   %s   %d.%d", p->pid, state, p->name, elapsedTime / 1000, elapsedTime - (firstdigit * 1000));
+
     if(p->state == SLEEPING){
       getcallerpcs((uint*)p->context->ebp+2, pc);
       for(i=0; i<10 && pc[i] != 0; i++)
