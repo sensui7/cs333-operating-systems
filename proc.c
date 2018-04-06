@@ -511,7 +511,7 @@ procdump(void)
   uint pc[10];
   uint elapsedTime;
 
-  cprintf("PID  State   Name  Elapsed  PCs\n");
+  cprintf("PID\tState\tName\tElapsed\tPCs\n");
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->state == UNUSED)
@@ -523,8 +523,14 @@ procdump(void)
 
     // Project 1: Control - P
     elapsedTime = (ticks - p->start_ticks);
-    int firstdigit = elapsedTime / 1000;
-    cprintf("%d    %s   %s   %d.%d", p->pid, state, p->name, elapsedTime / 1000, elapsedTime - (firstdigit * 1000));
+    int firstDigit = elapsedTime / 1000, decDigits = elapsedTime - (firstDigit * 1000);
+    if(decDigits < 100){
+      cprintf("%d\t%s\t%s\t%d.0%d", p->pid, state, p->name, elapsedTime / 1000, decDigits);
+    }
+    else{ 
+      cprintf("%d\t%s\t%s\t%d.%d", p->pid, state, p->name, elapsedTime / 1000, decDigits);
+    }
+    // End of modification code for Project 1
 
     if(p->state == SLEEPING){
       getcallerpcs((uint*)p->context->ebp+2, pc);
