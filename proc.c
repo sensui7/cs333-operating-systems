@@ -511,7 +511,7 @@ procdump(void)
   uint pc[10];
   uint elapsedTime;
 
-  cprintf("PID\tState\tName\tElapsed\tPCs\n");
+  cprintf("PID\tState\tName\tElapsed\t PCs\n");
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->state == UNUSED)

@@ -155,7 +155,8 @@ static char * syscallnames[] = {
 [SYS_link]    "link",
 [SYS_mkdir]   "mkdir",
 [SYS_close]   "close",
-[SYS_halt]    "halt"
+[SYS_halt]    "halt",
+[SYS_date]    "date"
 };
 #endif
 
