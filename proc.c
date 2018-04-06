@@ -524,8 +524,12 @@ procdump(void)
     // Project 1: Control - P
     elapsedTime = (ticks - p->start_ticks);
     int firstDigit = elapsedTime / 1000, decDigits = elapsedTime - (firstDigit * 1000);
-    if(decDigits < 100){
+
+    if(decDigits < 100 && decDigits >= 10){
       cprintf("%d\t%s\t%s\t%d.0%d", p->pid, state, p->name, elapsedTime / 1000, decDigits);
+    }
+    else if(decDigits < 10){
+      cprintf("%d\t%s\t%s\t%d.00%d", p->pid, state, p->name, elapsedTime / 1000, decDigits);
     }
     else{ 
       cprintf("%d\t%s\t%s\t%d.%d", p->pid, state, p->name, elapsedTime / 1000, decDigits);

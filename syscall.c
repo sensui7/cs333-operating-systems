@@ -169,7 +169,7 @@ syscall(void)
   num = proc->tf->eax;
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     proc->tf->eax = syscalls[num]();
-// Project 1: print system call and return value (system call tracing)
+    // Project 1: print system call and return value (system call tracing)
     #ifdef PRINT_SYSCALLS
     cprintf("%s -> %d\n", syscallnames[num], proc->tf->eax);
     #endif
