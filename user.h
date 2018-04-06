@@ -25,7 +25,9 @@ int sleep(int);
 int uptime(void);
 int halt(void);
 // Project 1: user-side function prototype
+#ifdef CS333_P1
 int date(struct rtcdate*);
+#endif
 
 // ulib.c
 int stat(char*, struct stat*);

@@ -100,7 +100,9 @@ extern int sys_write(void);
 extern int sys_uptime(void);
 extern int sys_halt(void);
 // Project 1: Entry point points to implementation of system call in sysproc.c
+#ifdef CS333_P1
 extern int sys_date(void);
+#endif
 
 // function dispatch table
 static int (*syscalls[])(void) = {
@@ -127,7 +129,9 @@ static int (*syscalls[])(void) = {
 [SYS_close]   sys_close,
 [SYS_halt]    sys_halt,
 // Project 1: Declares mapping from symbol name to function name
+#ifdef CS333_P1
 [SYS_date]    sys_date
+#endif
 };
 
 // put data structure for printing out system call invocation information here

@@ -93,6 +93,7 @@ sys_halt(void){
 }
 
 // show current date
+#ifdef CS333_P1
 int
 sys_date(void){
   struct rtcdate *d;
@@ -103,4 +104,4 @@ sys_date(void){
   cmostime(d);
   return 0;
 }
-
+#endif
