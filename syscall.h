@@ -24,3 +24,10 @@
 // student system calls begin here. Follow the existing pattern.
 // Project 1: Map system call name to system call number
 #define SYS_date    SYS_halt+1
+// Project 2: Map system calls to system call numbers
+#define SYS_getgid  SYS_date+1
+#define SYS_getppid SYS_getgid+1
+#define SYS_getuid  SYS_getppid+1
+#define SYS_setgid  SYS_getuid+1
+#define SYS_setuid  SYS_setgid+1
+#define SYS_getprocs SYS_setuid+1

@@ -32,3 +32,11 @@ SYSCALL(uptime)
 SYSCALL(halt)
 // Project 1: user-side stub for system call (macro)
 SYSCALL(date)
+// Project 2: user-side stub for system calls
+SYSCALL(getgid)
+SYSCALL(getppid)
+SYSCALL(getuid)
+SYSCALL(setgid)
+SYSCALL(setuid)
+SYSCALL(getprocs)
+

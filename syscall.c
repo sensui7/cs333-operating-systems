@@ -103,6 +103,14 @@ extern int sys_halt(void);
 #ifdef CS333_P1
 extern int sys_date(void);
 #endif
+#ifdef CS333_P2
+extern int sys_getgid(void);
+extern int sys_getppid(void);
+extern int sys_getuid(void);
+extern int sys_setuid(void);
+extern int sys_setgid(void);
+extern int sys_getprocs(void);
+#endif
 
 // function dispatch table
 static int (*syscalls[])(void) = {
@@ -130,7 +138,15 @@ static int (*syscalls[])(void) = {
 [SYS_halt]    sys_halt,
 // Project 1: Declares mapping from symbol name to function name
 #ifdef CS333_P1
-[SYS_date]    sys_date
+[SYS_date]    sys_date,
+#endif
+#ifdef CS333_P2
+[SYS_getgid]  sys_getgid,
+[SYS_getppid] sys_getppid,
+[SYS_getuid]  sys_getuid,
+[SYS_setgid]  sys_setgid,
+[SYS_setuid]  sys_setuid,
+[SYS_getprocs] sys_getprocs
 #endif
 };
 
@@ -160,7 +176,13 @@ static char * syscallnames[] = {
 [SYS_mkdir]   "mkdir",
 [SYS_close]   "close",
 [SYS_halt]    "halt",
-[SYS_date]    "date"
+[SYS_date]    "date",
+[SYS_getgid]  "getgid",
+[SYS_getppid] "getppid",
+[SYS_getuid]  "getuid",
+[SYS_setgid]  "setgid",
+[SYS_setuid]  "setuid",
+[SYS_getprocs] "getprocs"
 };
 #endif
 

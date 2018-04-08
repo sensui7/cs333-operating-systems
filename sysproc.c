@@ -6,6 +6,7 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
+#include "uproc.h"
 
 int
 sys_fork(void)
@@ -104,4 +105,88 @@ sys_date(void){
   cmostime(d);
   return 0;
 }
+#endif
+
+#ifdef CS333_P2
+uint
+sys_getgid(void){
+  return proc -> gid;
+}
+
+uint
+sys_getppid(void){
+  // return pid of 1 if it's the first process
+  if(proc->pid == 1)
+  {
+    return 1;
+  }
+
+  // return the parent process if otherwise
+  return proc -> parent -> pid;
+}
+
+uint
+sys_getuid(void){
+  return proc -> uid;
+}
+
+// for setgid & setuid, need to use argint to verify that
+// the pointer by the user is a pointer of the user part
+// of the addy space
+// argint fetches the n'th 32-bit system call argument
+// fetchint writes addy value from user memory to *ip
+// fetchint returns if the address is valid in the user space
+
+int 
+sys_setgid(void){
+  int gid;
+  int verifyGIDAddy = argint(0, &gid);
+ 
+  // check if pointer by user is correct part of its addy space 
+  if(verifyGIDAddy == -1){
+    return -1;
+  }
+
+  // update the gid if it's valid
+  if(gid > 0 && gid < 32767){
+    proc -> gid = gid;
+    return 0;
+  }
+
+  return -1;
+}
+
+int
+sys_setuid(void){
+  int uid;
+  int verifyUIDAddy = argint(0, &uid);
+
+  // check if pointer by user is correct part of its addy space 
+  if(verifyUIDAddy == -1){
+    return -1;
+  }
+
+  // update the gid if it's valid
+  if(uid > 0 && uid < 32767){
+    proc -> uid = uid;
+    return 0;
+  }
+
+  return -1;
+}
+
+int
+sys_getprocs(void){
+  int max;
+  struct uproc * table;
+  int verifyMaxAddy = argint(0, &max);
+  int verifyTableAddy = argptr(1, (void*) &table, sizeof(*table));
+
+  if(verifyMaxAddy < 0 || verifyTableAddy < 0){
+    return -1;
+  }
+ 
+  return getprocs(max, table); 
+}
+
 #endif

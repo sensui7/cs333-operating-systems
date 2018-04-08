@@ -1,5 +1,6 @@
 struct stat;
 struct rtcdate;
+struct uproc;
 
 // system calls
 int fork(void);
@@ -27,6 +28,14 @@ int halt(void);
 // Project 1: user-side function prototype
 #ifdef CS333_P1
 int date(struct rtcdate*);
+#endif
+#ifdef CS333_P2
+uint getgid(void);
+uint getppid(void);
+uint getuid(void);
+int setgid(uint);
+int setuid(uint);
+int getprocs(uint max, struct uproc* table);
 #endif
 
 // ulib.c

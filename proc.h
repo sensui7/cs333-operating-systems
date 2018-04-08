@@ -58,6 +58,12 @@ struct proc {
   char *kstack;                // Bottom of kernel stack for this process
   enum procstate state;        // Process state
   uint pid;                    // Process ID
+  #ifdef CS333_P2
+  uint gid;		       // Group ID
+  uint uid;		       // User ID
+  uint cpu_ticks_total;        // total elapsed ticks in CPU
+  uint cpu_ticks_in;           // ticks when scheduled
+  #endif
   struct proc *parent;         // Parent process
   struct trapframe *tf;        // Trap frame for current syscall
   struct context *context;     // swtch() here to run process
@@ -76,3 +82,6 @@ struct proc {
 //   original data and bss
 //   fixed-size stack
 //   expandable heap
+
+// For Project 2, proc structure does not need ppid field
+// sas the parent can and should be determined on the fly.
