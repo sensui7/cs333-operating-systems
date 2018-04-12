@@ -39,4 +39,3 @@ SYSCALL(getuid)
 SYSCALL(setgid)
 SYSCALL(setuid)
 SYSCALL(getprocs)
-

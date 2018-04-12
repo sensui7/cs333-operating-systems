@@ -336,13 +336,12 @@ scheduler(void)
       proc = p;
       switchuvm(p);
       p->state = RUNNING;
-      swtch(&cpu->scheduler, proc->context);
-      switchkvm();
-
       // when RUNNABLE process put into a CPU
       #ifdef CS333_P2
       p->cpu_ticks_in = ticks;
       #endif
+      swtch(&cpu->scheduler, proc->context);
+      switchkvm();
 
       // Process is done running for now.
       // It should have changed its p->state before coming back.
@@ -370,6 +369,13 @@ scheduler(void)
 void
 sched(void)
 {
+  // when a process gets removed from its CPU (change in time record)
+  #ifdef CS333_P2
+  if (proc->state != RUNNING){
+    proc->cpu_ticks_total += ticks - proc->cpu_ticks_in;
+  }
+  #endif
+
   int intena;
 
   if(!holding(&ptable.lock))
@@ -383,11 +389,6 @@ sched(void)
   intena = cpu->intena;
   swtch(&proc->context, cpu->scheduler);
   cpu->intena = intena;
-
-  // when a process gets removed from its CPU (change in time record)
-  #ifdef CS333_P2
-    proc->cpu_ticks_total += ticks - proc->cpu_ticks_in;
-  #endif
 }
 
 // Give up the CPU for one scheduling round.
@@ -528,8 +529,8 @@ static char *states[] = {
   [ZOMBIE]    "zombie"
 };
 
-#ifdef CS333_P1
-void
+#if defined(CS333_P1) || defined(CS333_P2)
+static void
 printTime(int ticks){
   int firstDigit = ticks / 1000;
   int decDigits = ticks - (firstDigit * 1000);
@@ -557,9 +558,14 @@ procdump(void)
   struct proc *p;
   char *state;
   uint pc[10];
-  #ifdef CS333_P1
+  #if defined(CS333_P2) || defined(CS333_P1)
   uint elapsedTime;
+  #endif
 
+  #if defined(CS333_P1) && !defined (CS333_P2)
+  cprintf("PID\tState\tName\tElapsed\t PCs\n");
+  #endif
+  #ifdef CS333_P2
   cprintf("PID\tName\tUID\tGID\tPPID\tElapsed\tCPU\tState\tSize\tPCs\n");
   #endif
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
@@ -569,8 +575,11 @@ procdump(void)
       state = states[p->state];
     else
       state = "???";
-    #ifdef CS333_P2
+    #if defined(CS333_P1) || defined(CS333_P2)
     elapsedTime = ticks - p->start_ticks;
+    #endif
+
+    #ifdef CS333_P2
     int ppid = (p->pid == 1) ? 1 : p->parent->pid;
     cprintf("%d\t%s\t%d\t%d\t%d\t", p->pid, p->name, p->uid, p->gid, ppid);
     printTime(elapsedTime);
@@ -580,6 +589,11 @@ procdump(void)
 
     #ifndef CS333_P1
     cprintf("%d %s %s", p->pid, state, p->name);
+    #endif
+
+    #if defined(CS333_P1) && !defined(CS333_P2)
+    cprintf("%d\t%s\t%s\t", p->pid, state, p->name);
+    printTime(elapsedTime);
     #endif
 
     if(p->state == SLEEPING){
@@ -613,7 +627,7 @@ getprocs(uint max, struct uproc* table){
     table->pid = p->pid;
     table->uid = p->uid;
     table->gid = p->gid;
-    table->ppid = (p->pid == 1) ? 1 : p->parent->pid;
+    table->ppid = (p->pid == 1) ? 1 : p->parent->pid; // handle PPID for init
     table->elapsed_ticks = ticks - p->start_ticks;
     table->CPU_total_ticks = p->cpu_ticks_total;
     safestrcpy(table->state, state, sizeof(table->state));
@@ -622,6 +636,8 @@ getprocs(uint max, struct uproc* table){
   }
 
   release(&ptable.lock);
+
+  if (max > 64) return 64;
 
   return numProcs;
 }
