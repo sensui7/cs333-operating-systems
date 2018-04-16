@@ -532,18 +532,7 @@ static char *states[] = {
 #if defined(CS333_P1) || defined(CS333_P2)
 static void
 printTime(int ticks){
-  int firstDigit = ticks / 1000;
-  int decDigits = ticks - (firstDigit * 1000);
-
-  if(decDigits < 100 && decDigits >= 10){ 
-      cprintf("%d.0%d\t", ticks / 1000, decDigits);
-  }
-  else if(decDigits < 10){ 
-      cprintf("%d.00%d\t", ticks / 1000, decDigits);
-  }
-  else{ 
-      cprintf("%d.%d\t", ticks / 1000, decDigits);
-  }
+  cprintf("%d.%d%d%d\t", (ticks / 1000), (ticks % 1000) / 100, (ticks % 100) / 10, (ticks % 10) / 1);
 }
 #endif
 
@@ -587,19 +576,19 @@ procdump(void)
     cprintf("%s\t%d", state, p->sz);
     #endif
 
-    #ifndef CS333_P1
-    cprintf("%d %s %s", p->pid, state, p->name);
-    #endif
-
     #if defined(CS333_P1) && !defined(CS333_P2)
     cprintf("%d\t%s\t%s\t", p->pid, state, p->name);
     printTime(elapsedTime);
     #endif
 
+    #ifndef CS333_P1
+    cprintf("%d %s %s", p->pid, state, p->name);
+    #endif
+
     if(p->state == SLEEPING){
       getcallerpcs((uint*)p->context->ebp+2, pc);
       for(i=0; i<10 && pc[i] != 0; i++)
-        cprintf("   %p", pc[i]);
+        cprintf(" %p", pc[i]);
     }
     cprintf("\n");
   }

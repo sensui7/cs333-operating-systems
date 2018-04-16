@@ -5,18 +5,7 @@
 
 static void
 printTime(int ticks){
-  int firstDigit = ticks / 1000;
-  int decDigits = ticks - (firstDigit * 1000);
-
-  if(decDigits < 100 && decDigits >= 10){ 
-      printf(1, "%d.0%d\t", ticks / 1000, decDigits);
-  }
-  else if(decDigits < 10){ 
-      printf(1, "%d.00%d\t", ticks / 1000, decDigits);
-  }
-  else{ 
-      printf(1, "%d.%d\t", ticks / 1000, decDigits);
-  }
+  printf(1, "%d.%d%d%d\t", (ticks / 1000), (ticks % 1000) / 100, (ticks % 100) / 10, (ticks % 10) / 1);
 }
 
 int

@@ -78,7 +78,8 @@ sys_sleep(void)
 // return how many clock tick interrupts have occurred
 // since start. 
 int
-sys_uptime(void){
+sys_uptime(void)
+{
   uint xticks;
   
   xticks = ticks;
@@ -87,7 +88,8 @@ sys_uptime(void){
 
 // Turn off the computer
 int
-sys_halt(void){
+sys_halt(void)
+{
   cprintf("Shutting down ...\n");
   outw( 0x604, 0x0 | 0x2000);
   return 0;
@@ -96,7 +98,8 @@ sys_halt(void){
 // show current date
 #ifdef CS333_P1
 int
-sys_date(void){
+sys_date(void)
+{
   struct rtcdate *d;
   
   if(argptr(0, (void*)&d, sizeof(struct rtcdate)) < 0)
@@ -109,12 +112,14 @@ sys_date(void){
 
 #ifdef CS333_P2
 uint
-sys_getgid(void){
+sys_getgid(void)
+{
   return proc -> gid;
 }
 
 uint
-sys_getppid(void){
+sys_getppid(void)
+{
   // return pid of 1 if it's the first process
   if(proc->pid == 1)
   {
@@ -126,7 +131,8 @@ sys_getppid(void){
 }
 
 uint
-sys_getuid(void){
+sys_getuid(void)
+{
   return proc -> uid;
 }
 
@@ -138,7 +144,8 @@ sys_getuid(void){
 // fetchint returns if the address is valid in the user space
 
 int 
-sys_setgid(void){
+sys_setgid(void)
+{
   int gid;
   int verifyGIDAddy = argint(0, &gid);
  
@@ -157,7 +164,8 @@ sys_setgid(void){
 }
 
 int
-sys_setuid(void){
+sys_setuid(void)
+{
   int uid;
   int verifyUIDAddy = argint(0, &uid);
 
@@ -176,7 +184,8 @@ sys_setuid(void){
 }
 
 int
-sys_getprocs(void){
+sys_getprocs(void)
+{
   int max;
   struct uproc * table;
 

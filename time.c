@@ -9,18 +9,7 @@
 
 static void
 printTime(int ticks){
-  int firstDigit = ticks / 1000;
-  int decDigits = ticks - (firstDigit * 1000);
-
-  if(decDigits < 100 && decDigits >= 10){ 
-      printf(1, "ran in %d.0%d seconds\n", ticks / 1000, decDigits);
-  }
-  else if(decDigits < 10){ 
-      printf(1, "ran in %d.00%d seconds\n", ticks / 1000, decDigits);
-  }
-  else{ 
-      printf(1, "ran in %d.%d seconds\n", ticks / 1000, decDigits);
-  }
+  printf(1, "ran in %d.%d%d%d seconds\n", (ticks / 1000), (ticks % 1000) / 100, (ticks % 100) / 10, (ticks % 10) / 1);
 }
 
 // using fork() and exec() allows for a "recursive" strategy
