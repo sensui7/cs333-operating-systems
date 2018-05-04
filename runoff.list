@@ -94,3 +94,6 @@ uproc.h
 testuidgid.c
 testuidgidv2.c
 p2testsuite.c
+p2testsuitev2.c
+pstest.c
+zombieFree.c

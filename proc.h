@@ -75,6 +75,9 @@ struct proc {
   #ifdef CS333_P1
   uint start_ticks;            // Elapsed time of process creation
   #endif
+  #ifdef CS333_P3P4
+  struct proc *next;           // Pointer to next item in each list
+  #endif
 };
 
 // Process memory is laid out contiguously, low addresses first:

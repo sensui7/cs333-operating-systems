@@ -11,8 +11,14 @@ printTime(int ticks){
 int
 main(void)
 {
-  int max = 4, procs = 0;
+  int max = 16, procs = 0;
   struct uproc* table = malloc(max * sizeof(struct uproc));
+
+  if(!table){
+    printf(2, "Malloc failed for process table allocation\n");
+    exit();
+  }
+
   procs = getprocs(max, table);
 
   if(procs > 0){

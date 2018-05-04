@@ -112,6 +112,10 @@ int             growproc(int);
 int             kill(int);
 void            pinit(void);
 void            procdump(void);
+void            readydump(void);
+void            freedump(void);
+void            sleepdump(void);
+void            zombiedump(void);
 void            scheduler(void) __attribute__((noreturn));
 void            sched(void);
 void            sleep(void*, struct spinlock*);
@@ -142,6 +146,7 @@ char*           safestrcpy(char*, const char*, int);
 int             strlen(const char*);
 int             strncmp(const char*, const char*, uint);
 char*           strncpy(char*, const char*, int);
+char*           strcat(char *, const char*);
 
 // syscall.c
 int             argint(int, int*);

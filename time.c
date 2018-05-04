@@ -22,18 +22,12 @@ printTime(int ticks){
 int
 main(int argc, char **argv)
 {
-  /*
-  if (argc < 2){
-    printf(1, "(null) ran in 0.000 seconds\n");
-    exit();
-  }
-  */
-
   // use the uptime() system call to 
   // access global kernel variable "ticks"
   uint start = uptime(), end = 0, delta = 0;
   int rc = fork();
- 
+  ++argv;
+
   // fork failure, so exit
   if (rc < 0){
     printf(1, "fork failed\n");
@@ -41,9 +35,7 @@ main(int argc, char **argv)
   }
   // it's the child, pid is 0
   else if(rc == 0){
-    exec(argv[1], &argv[1]);
-    //printf(1, "ran in 0.000 seconds\n");
-    //printf(1, "Error: invalid command or command doesn't exist\n");
+    exec(argv[0], argv);
   }
   else{
     wait(); // parent waits for the child
