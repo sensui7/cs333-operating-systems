@@ -785,8 +785,8 @@ wakeup1(void *chan)
     if(p->chan == chan){
       int rc = stateListRemove(&ptable.pLists.sleep, &ptable.pLists.sleepTail, p);
       if(rc == 0){
-          p->state = RUNNABLE;
-          stateListAdd(&ptable.pLists.ready, &ptable.pLists.readyTail, p);
+        p->state = RUNNABLE;
+        stateListAdd(&ptable.pLists.ready, &ptable.pLists.readyTail, p);
       }
     }
   }
@@ -953,7 +953,7 @@ procdump(void)
 void 
 readydump(void)
 {
-  struct proc *current = ptable.pLists.ready;
+  struct proc* current = ptable.pLists.ready;
 
   cprintf("Ready List Processes:\n");
 
@@ -988,7 +988,7 @@ freedump(void)
 void 
 sleepdump(void)
 { 
-  struct proc *current = ptable.pLists.sleep;
+  struct proc* current = ptable.pLists.sleep;
 
   cprintf("Sleep List Processes:\n");
 
@@ -1009,7 +1009,7 @@ sleepdump(void)
 void 
 zombiedump(void)
 {
-  struct proc *current = ptable.pLists.zombie;
+  struct proc* current = ptable.pLists.zombie;
   int ppid;
 
   cprintf("Zombie List Processes:\n");
@@ -1035,8 +1035,8 @@ int
 getprocs(uint max, struct uproc* table)
 {
   int numProcs = 0;
-  struct proc *p;
-  char * state;
+  struct proc* p;
+  char* state;
 
   acquire(&ptable.lock);
 
@@ -1064,9 +1064,9 @@ int
 getprocs(uint max, struct uproc* table)
 {
   int numProcs = 0;
-  struct proc *p;
-  struct proc *sleepList, *runningList, *readyList, *zombieList;
-  char *state;
+  struct proc* p;
+  struct proc* sleepList, *runningList, *readyList, *zombieList;
+  char* state;
   int runFlag = 0, readyFlag = 0, zombieFlag = 0;
 
   // avoid concurrent modification of resources
