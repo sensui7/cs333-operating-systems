@@ -31,3 +31,8 @@
 #define SYS_setgid  SYS_getuid+1
 #define SYS_setuid  SYS_setgid+1
 #define SYS_getprocs SYS_setuid+1
+#define SYS_setpriority SYS_getprocs+1
+// Project 5: Map system calls to system call numbers
+#define SYS_chmod   SYS_setpriority+1
+#define SYS_chown   SYS_chmod+1
+#define SYS_chgrp   SYS_chown+1

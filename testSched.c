@@ -1,4 +1,4 @@
-// Test program for CS333 scheduler, project 4.
+// Test program for: CS333 scheduler, project 4.
 #ifdef CS333_P3P4
 
 #include "types.h"
@@ -6,7 +6,7 @@
 
 // Must match NPRIO in proc.h
 #define PrioCount 7
-#define numChildren 10
+#define numChildren 5
 
 void
 countForever(int i)

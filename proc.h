@@ -77,6 +77,8 @@ struct proc {
   #endif
   #ifdef CS333_P3P4
   struct proc *next;           // Pointer to next item in each list
+  uint priority;               // Priority value for MLFQ
+  int budget;                  // Time to run before demotion in MLFQ
   #endif
 };
 

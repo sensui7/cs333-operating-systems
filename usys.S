@@ -39,3 +39,9 @@ SYSCALL(getuid)
 SYSCALL(setgid)
 SYSCALL(setuid)
 SYSCALL(getprocs)
+// Project 4: user-side stub for system call
+SYSCALL(setpriority)
+// Project 5: user-side stub for system calls
+SYSCALL(chmod)
+SYSCALL(chown)
+SYSCALL(chgrp)

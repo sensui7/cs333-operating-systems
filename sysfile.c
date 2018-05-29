@@ -440,3 +440,84 @@ sys_pipe(void)
   fd[1] = fd1;
   return 0;
 }
+
+#ifdef CS333_P5
+int
+sys_chmod(void)
+{
+  char* pathname;
+  int mode;
+
+  // Verify that arguments are within valid addresses
+  int verifypathaddy = argstr(0, &pathname);
+  int verifymodeaddy = argint(1, &mode);
+
+  if(verifypathaddy == -1){
+    return -1;
+  }
+
+  if(verifymodeaddy == -1){
+    return -2;
+  }
+
+  // Verify that mode is indeed a string of octal values converted to decimal
+  // 1777 (base 8) -> 1023 (base 10)
+  if(mode < 0000 || mode > 1023){
+    return -3;
+  }
+
+  return chmod(pathname, mode);
+}
+
+int
+sys_chown(void)
+{ 
+  char* pathname;
+  int owner;
+
+  // Verify that arguments are within valid addresses
+  int verifypathaddy = argstr(0, &pathname);
+  int verifyowneraddy = argint(1, &owner);
+
+  if(verifypathaddy == -1){
+    return -1;
+  }
+
+  if(verifyowneraddy == -1){
+    return -2;
+  }
+
+  // Verify that UID is within valid range
+  if(owner < 0 || owner > 32767){
+    return -3;
+  }
+
+  return chown(pathname, owner);
+}
+
+int
+sys_chgrp(void)
+{
+  char* pathname;
+  int group;
+
+  // Verify that arguments are within valid addresses
+  int verifypathaddy = argstr(0, &pathname);
+  int verifygroupaddy = argint(1, &group);
+
+  if(verifypathaddy == -1){
+    return -1;
+  }
+
+  if(verifygroupaddy == -1){
+    return -2;
+  }
+
+  // Verify that GID is within valid range
+  if(group < 0 || group > 32767){
+    return -3;
+  }
+
+  return chgrp(pathname, group);
+}
+#endif

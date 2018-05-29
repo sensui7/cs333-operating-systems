@@ -52,6 +52,9 @@ struct inode*   nameiparent(char*, char*);
 int             readi(struct inode*, char*, uint, uint);
 void            stati(struct inode*, struct stat*);
 int             writei(struct inode*, char*, uint, uint);
+int             chmod(char *pathname, int mode);
+int             chown(char *pathname, int owner);
+int             chgrp(char *pathname, int group);
 
 // ide.c
 void            ideinit(void);
@@ -124,7 +127,7 @@ int             wait(void);
 void            wakeup(void*);
 void            yield(void);
 int             getprocs(uint, struct uproc*);
-
+int             setpriority(int pid, int priority);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

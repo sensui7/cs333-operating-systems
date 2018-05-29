@@ -22,7 +22,7 @@ main(void)
   procs = getprocs(max, table);
 
   if(procs > 0){
-    printf(1, "PID\tName\tUID\tGID\tPPID\tElapsed\tCPU\tState\tSize\n");
+    printf(1, "PID\tName\tUID\tGID\tPPID\tPrio\tElapsed\tCPU\tState\tSize\n");
     
     for(int i = 0; i < procs; ++i, table++){
       printf(1, "%d\t", table->pid);  
@@ -30,6 +30,9 @@ main(void)
       printf(1, "%d\t", table->uid);  
       printf(1, "%d\t", table->gid);  
       printf(1, "%d\t", table->ppid);
+      #ifdef CS333_P3P4
+      printf(1, "%d\t", table->priority);
+      #endif
       printTime(table->elapsed_ticks);
       printTime(table->CPU_total_ticks);
       printf(1, "%s\t", table->state);

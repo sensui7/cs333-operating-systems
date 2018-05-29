@@ -97,3 +97,5 @@ p2testsuite.c
 p2testsuitev2.c
 pstest.c
 zombieFree.c
+p4test.c
+up4test.c

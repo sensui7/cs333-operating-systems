@@ -6,6 +6,9 @@
 #include "defs.h"
 #include "x86.h"
 #include "elf.h"
+#ifdef CS333_P5
+#include "stat.h"
+#endif
 
 int
 exec(char *path, char **argv)
@@ -17,6 +20,9 @@ exec(char *path, char **argv)
   struct inode *ip;
   struct proghdr ph;
   pde_t *pgdir, *oldpgdir;
+  #ifdef CS333_P5
+  struct stat st;
+  #endif
 
   begin_op();
   if((ip = namei(path)) == 0){
@@ -25,6 +31,18 @@ exec(char *path, char **argv)
   }
   ilock(ip);
   pgdir = 0;
+
+  #ifdef CS333_P5 
+  stati(ip, &st); // Copy state information from inode (fs.c) to stat
+   
+  // Check if process has execute permission for the file before reading elf header
+  if((st.uid == proc->uid && st.mode.flags.u_x) || (st.gid == proc->gid && st.mode.flags.g_x)){
+    // Do nothing if either group or owner check passes
+  }
+  else if(!st.mode.flags.o_x){
+    goto bad; // Return failure if not permitted to execute file
+  }
+  #endif
 
   // Check ELF header
   if(readi(ip, (char*)&elf, 0, sizeof(elf)) < sizeof(elf))
@@ -86,7 +104,14 @@ exec(char *path, char **argv)
       last = s+1;
   safestrcpy(proc->name, last, sizeof(proc->name));
 
-  // Commit to the user image.
+  // Commit to the user image. 
+  #ifdef CS333_P5
+  // Set process UID after checking stat setuid (before switching to user space)
+  if(st.mode.flags.setuid){
+    proc->uid = st.uid;
+  }
+  #endif
+
   oldpgdir = proc->pgdir;
   proc->pgdir = pgdir;
   proc->sz = sz;

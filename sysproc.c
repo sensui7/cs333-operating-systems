@@ -114,7 +114,7 @@ sys_date(void)
 uint
 sys_getgid(void)
 {
-  return proc -> gid;
+  return proc->gid;
 }
 
 uint
@@ -127,13 +127,13 @@ sys_getppid(void)
   }
 
   // return the parent process if otherwise
-  return proc -> parent -> pid;
+  return proc->parent -> pid;
 }
 
 uint
 sys_getuid(void)
 {
-  return proc -> uid;
+  return proc->uid;
 }
 
 // for setgid & setuid, need to use argint to verify that
@@ -156,8 +156,8 @@ sys_setgid(void)
 
   // update the gid if it's valid
   if(gid >= 0 && gid <= 32767){
-    proc -> gid = gid;
-    return 1;
+    proc->gid = gid;
+    return 0; // changed to 0 for success for p5-test.c
   }
 
   return -1;
@@ -176,8 +176,8 @@ sys_setuid(void)
 
   // update the gid if it's valid
   if(uid >= 0 && uid <= 32767){
-    proc -> uid = uid;
-    return 1;
+    proc->uid = uid;
+    return 0; // changed to 0 for success for p5-test.c
   }
 
   return -1;
@@ -187,7 +187,7 @@ int
 sys_getprocs(void)
 {
   int max;
-  struct uproc * table;
+  struct uproc* table;
 
   int verifyMaxAddy = argint(0, &max);
   int verifyTableAddy = argptr(1, (void*) &table, sizeof(*table));
@@ -197,5 +197,34 @@ sys_getprocs(void)
   }
 
   return getprocs(max, table); 
+}
+#endif
+
+#ifdef CS333_P3P4
+int
+sys_setpriority(void)
+{
+  int pid;
+  int priority;
+  int verifyPID = argint(0, &pid);
+  int verifyPriority = argint(1, &priority);
+
+  // Check if arguments are within valid addresses
+  if (verifyPID == -1 || verifyPriority == -1){
+    return -1;
+  }
+
+  // Check PID bound 
+  if(pid < 0 || pid > 32767){
+    return -1;
+  }
+
+  // Check priority bound (e.g. 0 through 7 only)
+  if(priority < 0 || priority > MAXPRIO){
+    return -1;
+  }
+
+  // Pass args to code in proc.c
+  return setpriority(pid, priority);
 }
 #endif

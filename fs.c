@@ -186,8 +186,13 @@ ialloc(uint dev, short type)
     if(dip->type == 0){  // a free inode
       memset(dip, 0, sizeof(*dip));
       dip->type = type;
+      #ifdef CS333_P5
+      dip->uid = DEFAULT_UID;
+      dip->gid = DEFAULT_GID;
+      dip->mode.asInt = DEFAULT_MODE;
+      #endif
       log_write(bp);   // mark it allocated on the disk
-      brelse(bp);
+      brelse(bp);    
       return iget(dev, inum);
     }
     brelse(bp);
@@ -208,6 +213,11 @@ iupdate(struct inode *ip)
   dip->major = ip->major;
   dip->minor = ip->minor;
   dip->nlink = ip->nlink;
+  #ifdef CS333_P5
+  dip->uid = ip->uid;
+  dip->gid = ip->gid;
+  dip->mode.asInt = ip->mode.asInt;
+  #endif
   dip->size = ip->size;
   memmove(dip->addrs, ip->addrs, sizeof(ip->addrs));
   log_write(bp);
@@ -285,6 +295,11 @@ ilock(struct inode *ip)
     ip->major = dip->major;
     ip->minor = dip->minor;
     ip->nlink = dip->nlink;
+    #ifdef CS333_P5
+    ip->uid = dip->uid;
+    ip->gid = dip->gid;
+    ip->mode.asInt = dip->mode.asInt;
+    #endif
     ip->size = dip->size;
     memmove(ip->addrs, dip->addrs, sizeof(ip->addrs));
     brelse(bp);
@@ -426,6 +441,11 @@ stati(struct inode *ip, struct stat *st)
   st->ino = ip->inum;
   st->type = ip->type;
   st->nlink = ip->nlink;
+  #ifdef CS333_P5
+  st->uid = ip->uid;
+  st->gid = ip->gid;
+  st->mode.asInt = ip->mode.asInt;
+  #endif
   st->size = ip->size;
 }
 
@@ -649,3 +669,83 @@ nameiparent(char *path, char *name)
 {
   return namex(path, 1, name);
 }
+
+// Instructions for locking etc. is found on line 95,
+// which talks about inodes and what sequence of
+// calls to use when modifying an inode structure.
+#ifdef CS333_P5
+int
+chmod(char *pathname, int mode)
+{
+  struct inode *ip;
+
+  // Begin transaction, followed by copying found inode struct
+  begin_op(); 
+  ip = namei(pathname);
+  
+  if(!ip){ // Invalid inode
+    end_op();
+    return -1;
+  }
+  else{ // Update inode (to disk) after modification
+    ilock(ip);
+    ip->mode.asInt = mode;
+    iupdate(ip); // Copy modified in-memory inode to disk
+    iunlock(ip);
+    iput(ip);
+  }
+
+  end_op();
+  return 0;
+}
+
+int
+chown(char *pathname, int owner)
+{
+  struct inode *ip;
+
+  // Begin transaction, followed by copying found inode struct
+  begin_op();
+  ip = namei(pathname);
+
+  if(!ip){ // Invalid inode
+    end_op();
+    return -1;
+  }
+  else{ // Update inode (to disk) after modification
+    ilock(ip);
+    ip->uid = owner;
+    iupdate(ip);
+    iunlock(ip);
+    iput(ip);
+  }
+
+  end_op();
+  return 0;
+}
+
+int
+chgrp(char *pathname, int group)
+{
+  struct inode *ip;
+
+  // Begin transaction, followed by copying found inode struct
+  begin_op();
+  ip = namei(pathname);
+
+  if(!ip){ // Invalid inode
+    end_op();
+    return -1;
+  }
+  else{ // Update inode (to disk) after modification
+    ilock(ip);
+    ip->gid = group;
+    iupdate(ip);
+    iunlock(ip);
+    iput(ip);
+  }
+
+  end_op();
+  return 0;
+}
+#endif
